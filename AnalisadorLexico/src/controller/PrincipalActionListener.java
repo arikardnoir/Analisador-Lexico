@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import java.awt.event.ActionEvent;
@@ -19,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import views.Principal;
 
 /**
@@ -114,16 +110,17 @@ public class PrincipalActionListener implements ActionListener {
         int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
             frame.Area_Texto.setText("");
-            frame.Area_Texto.setText("programa NomePrograma;"
-                    + "\n" + "variaveis "
-                    + "\n" + "x,i,z:inteiro"
-                    + "\n" + "inicio"
-                    + "\n" + "escreva('Digite o numero: ');"
-                    + "\n" + "leia(x);"
-                    + "\n" + "escreva('Digite o numero: ')"
-                    + "\n" + "leia(i);"
-                    + "\n" + "escreva('Resultado: ');"
-                    + "\n" + "fim.");
+            frame.Area_Texto.setText("  Begin (int);"
+                    + "\n       " + "var"
+                    + "  " + " x,i,z:inteiro"
+                    + "\n     " + "begin"
+                    + "\n       " + "escreva('Digite o numero: ');"
+                    + "\n       " + "leia(x);"
+                    + "\n       " + "escreva('Digite o numero: ')"
+                    + "\n       " + "leia(i);"
+                    + "\n       " + "escreva('Resultado: ');"
+                    + "\n     " + "fim"
+                    + "\n" + "  End");
         }
     }
  /**
@@ -147,6 +144,8 @@ public static char Operador(char c){
 	char car=' ';
 	if(c=='<')car='<';
 	else if(c=='>')car='>';
+        else if(c=='=')car='=';
+//        else if(c=='<>')car='<>';
 	return car;
 }
 
@@ -157,9 +156,16 @@ public static char Separador(char c){
 	char car=' ';
 	if(c=='(') car='(';
 	else if(c==')')car=')';
+        else if(c=='}')car='}';
+        else if(c=='{')car='{';
 	return car;
 }
 
+public static boolean FinalLine(char c){
+	
+	if(c=='\n') return true;
+	else return false;
+}
 
 
 public static boolean palavraReservada(String cad){
@@ -248,8 +254,14 @@ public static boolean palavraReservada(String cad){
                             continue;
                         }//end if si es variable
                         else if (!Character.isLetterOrDigit(t)) {
-                            //si no es letra ni digito entonces...
-                            if (Caracter(t)) {//¿es separador?
+                            if(FinalLine(t)){
+                              
+                                System.out.println("Fim de linha..");
+                            
+                            }
+
+                             //si no es letra ni digito entonces...
+                            else if (Caracter(t)) {//¿es separador?
                                 System.out.println("Separador-->" + Separador(t));
                                 String c = "" + Separador(t);
                                 Separador.add(c);
@@ -270,6 +282,40 @@ public static boolean palavraReservada(String cad){
 
     }
 
+    
+    private void jMenuItem5ActionPerformed() {										  
+
+  		try{
+		   Analise();
+		   DefaultTableModel var = (DefaultTableModel) frame.Tabela.getModel();
+                  // var.setNumRows(0);
+                   
+                   
+		   for(int i=0;i<Palavra.size();i++){
+			   var.addRow(new String[]{Palavra.get(i)});
+		   }
+		   for(int i=0;i<Identificador.size();i++){
+			   var.addRow(new String[]{null,Identificador.get(i)});
+		   }
+		   for(int i=0;i<Separador.size();i++){
+			   var.addRow(new String[]{null,null,Separador.get(i)});
+		   }
+		   for(int i=0;i<Operador.size();i++){
+			   var.addRow(new String[]{null,null,null,Operador.get(i)});
+		   }
+		   for(int i=0;i<Numero.size();i++){
+			   var.addRow(new String[]{null,null,null,null,Numero.get(i)});
+		   }
+
+		  // var.addRow(new String[]{palavra,identificador,"oi",Numero,"oi","oi,","oii"});
+
+  		}
+  		catch(Exception e){
+		   JOptionPane.showMessageDialog(null, "Houve um erro: "+e.getMessage());
+  		}
+  	 }  
+    
+    
     public void actionPerformed(ActionEvent e) {
 
         if ("Abrir".equals(e.getActionCommand())) {
@@ -300,6 +346,8 @@ public static boolean palavraReservada(String cad){
             Fechar();
 
         } else if ("Analisar".equals(e.getActionCommand())) {
+            
+            jMenuItem5ActionPerformed();
 
         } else if ("Sobre".equals(e.getActionCommand())) {
 
